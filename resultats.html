@@ -165,17 +165,23 @@ try {
     zoneResultat.innerHTML = "<p>Recherche en cours...</p>";
 
     try {
-      const { data: eleve, error } = await supabase
+      const { data: eleves, error } = await supabase
         .from("eleves")
         .select("*")
-        .ilike("nom", nom)
-        .eq("classe", classe)
-        .single();
+        .ilike("nom", `%${nom}%`)
+        .eq("classe", classe);
 
-      if (error || !eleve) {
+      if (error) {
+        zoneResultat.innerHTML = "<p style='color:red;'>Erreur : " + error.message + "</p>";
+        return;
+      }
+
+      if (!eleves || eleves.length === 0) {
         zoneResultat.innerHTML = "<p>Aucun résultat trouvé pour ce nom et cette classe.</p>";
         return;
       }
+
+      const eleve = eleves[0];
 
       const { data: notes } = await supabase
         .from("notes")
