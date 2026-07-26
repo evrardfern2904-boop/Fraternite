@@ -3,24 +3,7 @@ window.addEventListener("load", function () {
     console.log("Bienvenue sur le site de l'École Fraternité");
 });
 
-// Confirmation avant l'envoi d'un formulaire
-document.addEventListener("DOMContentLoaded", function () {
 
-    const formulaire = document.querySelector("form");
-
-    if (formulaire) {
-        formulaire.addEventListener("submit", function (e) {
-
-            e.preventDefault();
-
-            alert("Votre formulaire a été envoyé avec succès !");
-
-            formulaire.reset();
-
-        });
-    }
-
-});
 
 // Bouton Retour en haut
 const bouton = document.createElement("button");
