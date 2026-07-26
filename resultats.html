@@ -149,50 +149,66 @@ Natitingou - Bénin
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = "https://wvtkczhhhxtvhtgbiouz.supabase.co";
-const SUPABASE_KEY = "sb_publishable_67zbjKULBBMOE5beuZljLA_Yt6Dq0zI";
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const zoneResultat = document.getElementById("resultat");
 
-document.getElementById("formResultat").addEventListener("submit", async function(e) {
-  e.preventDefault();
+try {
+  const SUPABASE_URL = "https://wvtkczhhhxtvhtgbiouz.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_67zbjKULBBMOE5beuZljLA_Yt6Dq0zI";
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const matricule = document.getElementById("matricule").value.trim();
-  const classe = document.getElementById("classe").value;
-  const zoneResultat = document.getElementById("resultat");
+  document.getElementById("formResultat").addEventListener("submit", async function(e) {
+    e.preventDefault();
 
-  zoneResultat.innerHTML = "<p>Recherche en cours...</p>";
+    const matricule = document.getElementById("matricule").value.trim();
+    const classe = document.getElementById("classe").value;
 
-  const { data: eleve, error } = await supabase
-    .from("eleves")
-    .select("*")
-    .eq("matricule", matricule)
-    .eq("classe", classe)
-    .single();
+    zoneResultat.innerHTML = "<p>Recherche en cours...</p>";
 
-  if (error || !eleve) {
-    zoneResultat.innerHTML = "<p>Aucun résultat trouvé pour ce matricule et cette classe.</p>";
-    return;
-  }
+    try {
+      const { data: eleve, error } = await supabase
+        .from("eleves")
+        .select("*")
+        .eq("matricule", matricule)
+        .eq("classe", classe)
+        .single();
 
-  const { data: notes } = await supabase
-    .from("notes")
-    .select("*")
-    .eq("eleve_id", eleve.id);
+      if (error) {
+        zoneResultat.innerHTML = "<p style='color:red;'>Erreur : " + error.message + "</p>";
+        return;
+      }
 
-  let html = `<h2>Bulletin de ${eleve.nom} — ${eleve.classe}</h2>
-    <table>
-      <tr><th>Matière</th><th>Note /20</th></tr>`;
+      if (!eleve) {
+        zoneResultat.innerHTML = "<p>Aucun résultat trouvé.</p>";
+        return;
+      }
 
-  notes.forEach(n => {
-    html += `<tr><td>${n.matiere}</td><td>${n.note}</td></tr>`;
+      const { data: notes } = await supabase
+        .from("notes")
+        .select("*")
+        .eq("eleve_id", eleve.id);
+
+      let html = `<h2>Bulletin de ${eleve.nom} — ${eleve.classe}</h2>
+        <table>
+          <tr><th>Matière</th><th>Note /20</th></tr>`;
+
+      notes.forEach(n => {
+        html += `<tr><td>${n.matiere}</td><td>${n.note}</td></tr>`;
+      });
+
+      html += `<tr><th>Moyenne Générale</th><th>${eleve.moyenne_generale}/20</th></tr>
+          <tr><th>Rang</th><th>${eleve.rang}</th></tr>
+        </table>`;
+
+      zoneResultat.innerHTML = html;
+
+    } catch (err) {
+      zoneResultat.innerHTML = "<p style='color:red;'>Erreur JS : " + err.message + "</p>";
+    }
   });
 
-  html += `<tr><th>Moyenne Générale</th><th>${eleve.moyenne_generale}/20</th></tr>
-      <tr><th>Rang</th><th>${eleve.rang}</th></tr>
-    </table>`;
-
-  zoneResultat.innerHTML = html;
-});
+} catch (err) {
+  zoneResultat.innerHTML = "<p style='color:red;'>Erreur de chargement Supabase : " + err.message + "</p>";
+}
 </script>
 
 <script src="script.js"></script>
