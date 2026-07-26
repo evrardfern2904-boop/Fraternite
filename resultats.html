@@ -83,12 +83,12 @@ box-shadow:0 5px 10px rgba(0,0,0,.2);
 
 <form id="formResultat">
 
-<label>Numéro matricule</label>
+<label>Nom et prénom de l'élève</label>
 
 <input
 type="text"
-id="matricule"
-placeholder="Exemple : FRAT20260015"
+id="nom"
+placeholder="Exemple : Diallo Awa"
 required>
 
 <label>Classe</label>
@@ -159,7 +159,7 @@ try {
   document.getElementById("formResultat").addEventListener("submit", async function(e) {
     e.preventDefault();
 
-    const matricule = document.getElementById("matricule").value.trim();
+    const nom = document.getElementById("nom").value.trim();
     const classe = document.getElementById("classe").value;
 
     zoneResultat.innerHTML = "<p>Recherche en cours...</p>";
@@ -168,17 +168,12 @@ try {
       const { data: eleve, error } = await supabase
         .from("eleves")
         .select("*")
-        .eq("matricule", matricule)
+        .ilike("nom", nom)
         .eq("classe", classe)
         .single();
 
-      if (error) {
-        zoneResultat.innerHTML = "<p style='color:red;'>Erreur : " + error.message + "</p>";
-        return;
-      }
-
-      if (!eleve) {
-        zoneResultat.innerHTML = "<p>Aucun résultat trouvé.</p>";
+      if (error || !eleve) {
+        zoneResultat.innerHTML = "<p>Aucun résultat trouvé pour ce nom et cette classe.</p>";
         return;
       }
 
