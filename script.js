@@ -3,8 +3,6 @@ window.addEventListener("load", function () {
     console.log("Bienvenue sur le site de l'École Fraternité");
 });
 
-
-
 // Bouton Retour en haut
 const bouton = document.createElement("button");
 
