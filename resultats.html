@@ -81,20 +81,21 @@ box-shadow:0 5px 10px rgba(0,0,0,.2);
 
 <div class="recherche">
 
-<form>
+<form id="formResultat">
 
 <label>Numéro matricule</label>
 
 <input
 type="text"
+id="matricule"
 placeholder="Exemple : FRAT20260015"
 required>
 
 <label>Classe</label>
 
-<select required>
+<select id="classe" required>
 
-<option>Choisir la classe</option>
+<option value="">Choisir la classe</option>
 
 <option>CI</option>
 <option>CP</option>
@@ -124,95 +125,7 @@ Consulter les résultats
 
 </div>
 
-<h2 style="margin-top:60px;">
-
-Exemple de bulletin
-
-</h2>
-
-<table>
-
-<tr>
-
-<th>Matière</th>
-
-<th>Note /20</th>
-
-<th>Observation</th>
-
-</tr>
-
-<tr>
-
-<td>Français</td>
-
-<td>15</td>
-
-<td>Bien</td>
-
-</tr>
-
-<tr>
-
-<td>Mathématiques</td>
-
-<td>17</td>
-
-<td>Très Bien</td>
-
-</tr>
-
-<tr>
-
-<td>Anglais</td>
-
-<td>16</td>
-
-<td>Bien</td>
-
-</tr>
-
-<tr>
-
-<td>SVT</td>
-
-<td>14</td>
-
-<td>Assez Bien</td>
-
-</tr>
-
-<tr>
-
-<td>Histoire-Géographie</td>
-
-<td>13</td>
-
-<td>Assez Bien</td>
-
-</tr>
-
-<tr>
-
-<td>Physique-Chimie</td>
-
-<td>18</td>
-
-<td>Excellent</td>
-
-</tr>
-
-<tr>
-
-<th>Moyenne Générale</th>
-
-<th>15,5 /20</th>
-
-<th>Admis</th>
-
-</tr>
-
-</table>
+<div id="resultat" style="max-width:700px;margin:30px auto;"></div>
 
 </section>
 
@@ -234,16 +147,20 @@ Natitingou - Bénin
 
 </footer>
 
-<script src="script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = "TON_PROJECT_URL";
-const SUPABASE_KEY = "TA_ANON_KEY";
+const SUPABASE_URL = "COLLE_TON_PROJECT_URL_ICI";
+const SUPABASE_KEY = "COLLE_TA_ANON_KEY_ICI";
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-async function chercherResultat() {
+document.getElementById("formResultat").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
   const matricule = document.getElementById("matricule").value.trim();
-  const classe = document.getElementById("classe").value.trim();
+  const classe = document.getElementById("classe").value;
+  const zoneResultat = document.getElementById("resultat");
+
+  zoneResultat.innerHTML = "<p>Recherche en cours...</p>";
 
   const { data: eleve, error } = await supabase
     .from("eleves")
@@ -253,7 +170,7 @@ async function chercherResultat() {
     .single();
 
   if (error || !eleve) {
-    document.getElementById("resultat").innerHTML = "Aucun résultat trouvé.";
+    zoneResultat.innerHTML = "<p>Aucun résultat trouvé pour ce matricule et cette classe.</p>";
     return;
   }
 
@@ -262,17 +179,23 @@ async function chercherResultat() {
     .select("*")
     .eq("eleve_id", eleve.id);
 
-  let html = `<h3>${eleve.nom} — ${eleve.classe}</h3>
-    <p>Moyenne générale : ${eleve.moyenne_generale} — Rang : ${eleve.rang}</p><ul>`;
+  let html = `<h2>Bulletin de ${eleve.nom} — ${eleve.classe}</h2>
+    <table>
+      <tr><th>Matière</th><th>Note /20</th></tr>`;
 
   notes.forEach(n => {
-    html += `<li>${n.matiere} : ${n.note}/20 (coef ${n.coefficient})</li>`;
+    html += `<tr><td>${n.matiere}</td><td>${n.note}</td></tr>`;
   });
 
-  html += "</ul>";
-  document.getElementById("resultat").innerHTML = html;
-}
+  html += `<tr><th>Moyenne Générale</th><th>${eleve.moyenne_generale}/20</th></tr>
+      <tr><th>Rang</th><th>${eleve.rang}</th></tr>
+    </table>`;
+
+  zoneResultat.innerHTML = html;
+});
 </script>
+
+<script src="script.js"></script>
 
 </body>
 
