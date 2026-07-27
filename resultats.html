@@ -1,219 +1,143 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
+<!DOCTYPE html>  <html lang="fr">  
+<head>  <meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>Résultats - École Fraternité</title>  <link rel="stylesheet" href="style.css">  <style>  
+  
+table{  
+width:100%;  
+border-collapse:collapse;  
+margin-top:30px;  
+background:white;  
+}  
+  
+th,td{  
+border:1px solid #ddd;  
+padding:12px;  
+text-align:center;  
+}  
+  
+th{  
+background:#0056b3;  
+color:white;  
+}  
+  
+tr:nth-child(even){  
+background:#f5f5f5;  
+}  
+  
+.recherche{  
+max-width:700px;  
+margin:auto;  
+background:white;  
+padding:30px;  
+border-radius:10px;  
+box-shadow:0 5px 10px rgba(0,0,0,.2);  
+}  
+  
+</style>  </head>  <body>  <header>  <div class="logo">  
+<h1>École Fraternité</h1>  
+<p>Excellence - Discipline - Réussite</p>  
+</div>  <nav>  <ul>  
+<li><a href="index.html">Accueil</a></li>  
+            <li><a href="apropos.html">À propos</a></li>  
+            <li><a href="formations.html">Cycles</a></li>  
+            <li><a href="admission.html">Condition d'admission</a></li>  
+            <li><a href="tarif.html">Tarifs</a></li>  
+            <li><a href="inscription.html">Inscription</a></li>  
+            <li><a href="administration.html">Administration</a></li>  
+            <li><a href="calendrier.html">Calendrier scolaire</a></li>  
+            <li><a href="galerie.html">Galerie</a></li>  
+            <li><a href="resultats.html">Résultats</a></li>  
+            <li><a href="contact.html">Contact et Localisation</a></li>  
+</ul>  </nav>  </header>  <section>  <h2>Consultation des résultats</h2>  <div class="recherche">  <form id="formResultat">  <label>Nom et prénom de l'élève</label>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Résultats - École Fraternité</title>
-
-<link rel="stylesheet" href="style.css">
-
-<style>
-
-table{
-width:100%;
-border-collapse:collapse;
-margin-top:30px;
-background:white;
-}
-
-th,td{
-border:1px solid #ddd;
-padding:12px;
-text-align:center;
-}
-
-th{
-background:#0056b3;
-color:white;
-}
-
-tr:nth-child(even){
-background:#f5f5f5;
-}
-
-.recherche{
-max-width:700px;
-margin:auto;
-background:white;
-padding:30px;
-border-radius:10px;
-box-shadow:0 5px 10px rgba(0,0,0,.2);
-}
-
-</style>
-
-</head>
-
-<body>
-
-<header>
-
-<div class="logo">
-<h1>École Fraternité</h1>
-<p>Excellence - Discipline - Réussite</p>
-</div>
-
-<nav>
-
-<ul>
-<li><a href="index.html">Accueil</a></li>
-            <li><a href="apropos.html">À propos</a></li>
-            <li><a href="formations.html">Cycles</a></li>
-            <li><a href="admission.html">Condition d'admission</a></li>
-            <li><a href="tarif.html">Tarifs</a></li>
-            <li><a href="inscription.html">Inscription</a></li>
-            <li><a href="administration.html">Administration</a></li>
-            <li><a href="calendrier.html">Calendrier scolaire</a></li>
-            <li><a href="galerie.html">Galerie</a></li>
-            <li><a href="resultats.html">Résultats</a></li>
-            <li><a href="contact.html">Contact et Localisation</a></li>
-</ul>
-
-</nav>
-
-</header>
-
-<section>
-
-<h2>Consultation des résultats</h2>
-
-<div class="recherche">
-
-<form id="formResultat">
-
-<label>Nom et prénom de l'élève</label>
-
-<input
-type="text"
-id="nom"
-placeholder="Exemple : Diallo Awa"
+<input  
+type="text"  
+id="nom"  
+placeholder="Exemple : Diallo Awa"  
 required>
 
 <label>Classe</label>
 
-<select id="classe" required>
+<select id="classe" required>  <option value="">Choisir la classe</option>  <option>CI</option>  
+<option>CP</option>  
+<option>CE1</option>  
+<option>CE2</option>  
+<option>CM1</option>  
+<option>CM2</option>  <option>6e</option>  
+<option>5e</option>  
+<option>4e</option>  
+<option>3e</option>  <option>Seconde</option>  
+<option>Première</option>  
+<option>Terminale</option>  </select>  <button type="submit">  Consulter les résultats
 
-<option value="">Choisir la classe</option>
+</button>  </form>  </div>  <div id="resultat" style="max-width:700px;margin:30px auto;"></div>  </section>  <footer>  <p>  École Fraternité
 
-<option>CI</option>
-<option>CP</option>
-<option>CE1</option>
-<option>CE2</option>
-<option>CM1</option>
-<option>CM2</option>
-
-<option>6e</option>
-<option>5e</option>
-<option>4e</option>
-<option>3e</option>
-
-<option>Seconde</option>
-<option>Première</option>
-<option>Terminale</option>
-
-</select>
-
-<button type="submit">
-
-Consulter les résultats
-
-</button>
-
-</form>
-
-</div>
-
-<div id="resultat" style="max-width:700px;margin:30px auto;"></div>
-
-</section>
-
-<footer>
-
-<p>
-
-École Fraternité
-
-<br>
-
-Natitingou - Bénin
+<br>  Natitingou - Bénin
 
 <br><br>
 
 © 2026 Tous droits réservés
 
-</p>
-
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const zoneResultat = document.getElementById("resultat");
-
-try {
-  const SUPABASE_URL = "https://wvtkczhhhxtvhtgbiouz.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_67zbjKULBBMOE5beuZljLA_Yt6Dq0zI";
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-  document.getElementById("formResultat").addEventListener("submit", async function(e) {
-    e.preventDefault();
-
-    const nom = document.getElementById("nom").value.trim();
-    const classe = document.getElementById("classe").value;
-    console.log(nom, classe);
-    zoneResultat.innerHTML = "<p>Recherche en cours...</p>";
-
-    try {
-      const { data: eleves, error } = await supabase
-        .from("eleves")
-        .select("*")
-        .ilike("nom", `%${nom}%`)
-        .eq("classe", classe);
-
-      if (error) {
-        zoneResultat.innerHTML = "<p style='color:red;'>Erreur : " + error.message + "</p>";
-        return;
-      }
-
-      if (!eleves || eleves.length === 0) {
-        zoneResultat.innerHTML = "<p>Aucun résultat trouvé pour ce nom et cette classe.</p>";
-        return;
-      }
-
-      const eleve = eleves[0];
-
-      const { data: notes } = await supabase
-        .from("notes")
-        .select("*")
-        .eq("eleve_id", eleve.id);
-
-      let html = `<h2>Bulletin de ${eleve.nom} — ${eleve.classe}</h2>
-        <table>
-          <tr><th>Matière</th><th>Note /20</th></tr>`;
-
-      notes.forEach(n => {
-        html += `<tr><td>${n.matiere}</td><td>${n.note}</td></tr>`;
-      });
-
-      html += `<tr><th>Moyenne Générale</th><th>${eleve.moyenne_generale}/20</th></tr>
-          <tr><th>Rang</th><th>${eleve.rang}</th></tr>
-        </table>`;
-
-      zoneResultat.innerHTML = html;
-
-    } catch (err) {
-      zoneResultat.innerHTML = "<p style='color:red;'>Erreur JS : " + err.message + "</p>";
-    }
-  });
-
-} catch (err) {
-  zoneResultat.innerHTML = "<p style='color:red;'>Erreur de chargement Supabase : " + err.message + "</p>";
-}
-</script>
-
-<script src="script.js"></script>
-
-</body>
-
-</html>
+</p>  </footer>  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  <script>  
+const zoneResultat = document.getElementById("resultat");  
+  
+try {  
+  const SUPABASE_URL = "https://wvtkczhhhxtvhtgbiouz.supabase.co";  
+  const SUPABASE_KEY = "sb_publishable_67zbjKULBBMOE5beuZljLA_Yt6Dq0zI";  
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);  
+  
+  document.getElementById("formResultat").addEventListener("submit", async function(e) {  
+    e.preventDefault();  
+  
+    const nom = document.getElementById("nom").value.trim();  
+    const classe = document.getElementById("classe").value;  
+    console.log(nom, classe);  
+    zoneResultat.innerHTML = "<p>Recherche en cours...</p>";  
+  
+    try {  
+      const { data: eleves, error } = await supabase  
+        .from("eleves")  
+        .select("*")  
+        .ilike("nom", `%${nom}%`)  
+        .eq("classe", classe);  
+  
+      if (error) {  
+        zoneResultat.innerHTML = "<p style='color:red;'>Erreur : " + error.message + "</p>";  
+        return;  
+      }  
+  
+      if (!eleves || eleves.length === 0) {  
+        zoneResultat.innerHTML = "<p>Aucun résultat trouvé pour ce nom et cette classe.</p>";  
+        return;  
+      }  
+  
+      const eleve = eleves[0];  
+  
+      const { data: notes } = await supabase  
+        .from("notes")  
+        .select("*")  
+        .eq("eleve_id", eleve.id);  
+  
+      let html = `<h2>Bulletin de ${eleve.nom} — ${eleve.classe}</h2>  
+        <table>  
+          <tr><th>Matière</th><th>Note /20</th></tr>`;  
+  
+      notes.forEach(n => {  
+        html += `<tr><td>${n.matiere}</td><td>${n.note}</td></tr>`;  
+      });  
+  
+      html += `<tr><th>Moyenne Générale</th><th>${eleve.moyenne_generale}/20</th></tr>  
+          <tr><th>Rang</th><th>${eleve.rang}</th></tr>  
+        </table>`;  
+  
+      zoneResultat.innerHTML = html;  
+  
+    } catch (err) {  
+      zoneResultat.innerHTML = "<p style='color:red;'>Erreur JS : " + err.message + "</p>";  
+    }  
+  });  
+  
+} catch (err) {  
+  zoneResultat.innerHTML = "<p style='color:red;'>Erreur de chargement Supabase : " + err.message + "</p>";  
+}  
+</script>  <script src="script.js"></script>  </body>  </html>
