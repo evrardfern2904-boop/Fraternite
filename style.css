@@ -1,3 +1,5 @@
+/* ===== RÉINITIALISATION GÉNÉRALE ===== */
+
 *{
     margin:0;
     padding:0;
@@ -11,7 +13,7 @@ body{
     line-height:1.6;
 }
 
-/* HEADER */
+/* ===== HEADER ===== */
 
 header{
     background:#0056b3;
@@ -51,7 +53,7 @@ nav ul li a:hover{
     color:#ffd700;
 }
 
-/* HERO */
+/* ===== SECTION HERO (bannière d'accueil) ===== */
 
 .hero{
     height:80vh;
@@ -110,7 +112,7 @@ nav ul li a:hover{
     background:#ffc107;
 }
 
-/* Sections */
+/* ===== SECTIONS GÉNÉRALES ===== */
 
 section{
     padding:60px 8%;
@@ -122,7 +124,7 @@ section h2{
     color:#0056b3;
 }
 
-/* Cartes */
+/* ===== CARTES ===== */
 
 .cartes{
     display:flex;
@@ -145,7 +147,7 @@ section h2{
     transform:translateY(-8px);
 }
 
-/* Avantages */
+/* ===== AVANTAGES ===== */
 
 .avantages{
     display:grid;
@@ -161,7 +163,7 @@ section h2{
     box-shadow:0 5px 12px rgba(0,0,0,.1);
 }
 
-/* Formulaires */
+/* ===== FORMULAIRES ===== */
 
 form{
     max-width:700px;
@@ -196,7 +198,7 @@ button:hover{
     background:#003f85;
 }
 
-/* Footer */
+/* ===== FOOTER ===== */
 
 footer{
     background:#003366;
@@ -204,7 +206,8 @@ footer{
     text-align:center;
     padding:30px;
 }
-/* Tableau des tarifs */
+
+/* ===== TABLEAU DES TARIFS / RÉSULTATS ===== */
 
 table{
     width:100%;
@@ -237,14 +240,15 @@ table tr:hover{
     background:#dbeeff;
 }
 
-/* Responsive */
+/* ===== RESPONSIVE MOBILE (max-width:768px) ===== */
 
 @media(max-width:768px){
 
 header{
     flex-direction:column;
 }
-/* ===== Logo de l'école ===== */
+
+/* ----- Logo de l'école ----- */
 
 .logo-image{
     width:90px;
@@ -262,7 +266,7 @@ header{
     transform:scale(1.08);
 }
 
-/* ===== Nom de l'école ===== */
+/* ----- Nom de l'école ----- */
 
 nav{
     text-align:center;
@@ -281,7 +285,7 @@ nav h2{
     animation:titre 2s infinite alternate;
 }
 
-/* ===== Animation du titre ===== */
+/* ----- Animation du titre ----- */
 
 @keyframes titre{
 
@@ -306,6 +310,7 @@ nav ul{
 nav ol li{
     margin:10px 0;
 }
+
 nav ul li a:visited{
     color:white;
 }
@@ -337,7 +342,11 @@ nav ul li a:active{
     justify-content:center;
     text-align:center;
 }
+
 }
+
+/* ===== EN-TÊTE / NAV (hors media query) ===== */
+
 header{
     background:#0056b3;
     color:white;
@@ -367,7 +376,9 @@ nav ul li a{
     text-decoration:none;
     font-weight:bold;
 }
-/* Version ordinateur */
+
+/* ===== VERSION ORDINATEUR (min-width:992px) ===== */
+
 @media (min-width: 992px){
 
 main,
@@ -385,4 +396,4 @@ img{
     height:auto;
 }
 
-    }
+}
