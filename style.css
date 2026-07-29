@@ -349,7 +349,7 @@ nav ul li a:active{
 
 header{
     background:#0056b3;
-    color:green;
+    color:white;
     padding:20px 8%;
 }
 
@@ -365,6 +365,7 @@ nav h2{
 }
 
 nav ul{
+    color:yellow;
     display:flex;
     justify-content:center;
     list-style:none;
