@@ -13,8 +13,6 @@ body{
 
 /* HEADER */
 
-}
-
 header{
     background:#0056b3;
     color:white;
@@ -297,6 +295,7 @@ nav h2{
         transform:scale(1.03);
     }
 
+}
 
 nav ul{
     flex-direction:column;
@@ -386,4 +385,4 @@ img{
     height:auto;
 }
 
-}
+    }
