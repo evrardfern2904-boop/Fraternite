@@ -148,9 +148,15 @@ required>
 <option>4e</option>
 <option>3e</option>
 
-<option>Seconde</option>
-<option>Première</option>
-<option>Terminale</option>
+<option>Seconde A1</option>
+<option>Seconde A2</option>  
+<option>Seconde D</option>  
+<option>Première A1</option>  
+<option>Première A2</option>  
+<option>Première D</option>  
+<option>Terminale A1</option>  
+<option>Terminale A2</option>  
+<option>Terminale D</option>
 
 </select>
 
@@ -188,73 +194,159 @@ Natitingou - Bénin
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-function initFormulaireResultat(formId, nomId, classeId, resultatId) {
-  const zoneResultat = document.getElementById(resultatId);
+const SUPABASE_URL = "https://wvtkczhhhxtvhtgbiouz.supabase.co";
+const SUPABASE_KEY = "sb_publishable_67zbjKULBBMOE5beuZljLA_Yt6Dq0zI";
 
-  try {
-    const SUPABASE_URL = "https://wvtkczhhhxtvhtgbiouz.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_67zbjKULBBMOE5beuZljLA_Yt6Dq0zI";
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
-    document.getElementById(formId).addEventListener("submit", async function(e) {
-      e.preventDefault();
 
-      const nom = document.getElementById(nomId).value.trim();
-      const classe = document.getElementById(classeId).value;
-      console.log(nom, classe);
-      zoneResultat.innerHTML = "<p>Recherche en cours...</p>";
+// Recherche primaire
+document.getElementById("formResultatPrimaire").addEventListener("submit", async function(e){
 
-      try {
-        const { data: eleves, error } = await supabase
-          .from("eleves")
-          .select("*")
-          .ilike("nom", `%${nom}%`)
-          .eq("classe", classe);
+e.preventDefault();
 
-        if (error) {
-          zoneResultat.innerHTML = "<p style='color:red;'>Erreur : " + error.message + "</p>";
-          return;
-        }
+const nom = document.getElementById("nomPrimaire").value.trim();
+const classe = document.getElementById("classePrimaire").value;
 
-        if (!eleves || eleves.length === 0) {
-          zoneResultat.innerHTML = "<p>Aucun résultat trouvé pour ce nom et cette classe.</p>";
-          return;
-        }
+const zone = document.getElementById("resultatPrimaire");
 
-        const eleve = eleves[0];
+zone.innerHTML = "Recherche en cours...";
 
-        const { data: notes } = await supabase
-          .from("notes")
-          .select("*")
-          .eq("eleve_id", eleve.id);
 
-        let html = `<h2>Bulletin de ${eleve.nom} — ${eleve.classe}</h2>
-          <table>
-            <tr><th>Matière</th><th>Note /20</th></tr>`;
+const { data, error } = await supabase
+.from("resultats_primaire")
+.select("*")
+.ilike("nom", `%${nom}%`)
+.eq("classe", classe);
 
-        notes.forEach(n => {
-          html += `<tr><td>${n.matiere}</td><td>${n.note}</td></tr>`;
-        });
 
-        html += `<tr><th>Moyenne Générale</th><th>${eleve.moyenne_generale}/20</th></tr>
-            <tr><th>Rang</th><th>${eleve.rang}</th></tr>
-          </table>`;
-
-        zoneResultat.innerHTML = html;
-
-      } catch (err) {
-        zoneResultat.innerHTML = "<p style='color:red;'>Erreur JS : " + err.message + "</p>";
-      }
-    });
-
-  } catch (err) {
-    zoneResultat.innerHTML = "<p style='color:red;'>Erreur de chargement Supabase : " + err.message + "</p>";
-  }
+if(error){
+zone.innerHTML = "Erreur : " + error.message;
+return;
 }
 
-initFormulaireResultat("formResultatPrimaire", "nomPrimaire", "classePrimaire", "resultatPrimaire");
-initFormulaireResultat("formResultatSecondaire", "nomSecondaire", "classeSecondaire", "resultatSecondaire");
-</script>
+
+if(!data || data.length === 0){
+
+zone.innerHTML = "Aucun résultat trouvé.";
+
+return;
+
+}
+
+
+const eleve = data[0];
+
+
+zone.innerHTML = `
+
+<h2>Résultat de ${eleve.nom} ${eleve.prenom}</h2>
+
+<table>
+
+<tr>
+<th>Classe</th>
+<th>Décision</th>
+<th>Rang</th>
+</tr>
+
+<tr>
+<td>${eleve.classe}</td>
+<td>${eleve.decision}</td>
+<td>${eleve.rang}</td>
+</tr>
+
+</table>
+
+`;
+
+});
+
+
+
+
+// Recherche secondaire
+document.getElementById("formResultatSecondaire").addEventListener("submit", async function(e){
+
+e.preventDefault();
+
+
+const nom = document.getElementById("nomSecondaire").value.trim();
+const classe = document.getElementById("classeSecondaire").value;
+
+
+const zone = document.getElementById("resultatSecondaire");
+
+
+zone.innerHTML = "Recherche en cours...";
+
+
+const { data, error } = await supabase
+.from("resultats_secondaire")
+.select("*")
+.ilike("nom", `%${nom}%`)
+.eq("classe", classe);
+
+
+
+if(error){
+
+zone.innerHTML = "Erreur : " + error.message;
+
+return;
+
+}
+
+
+
+if(!data || data.length === 0){
+
+zone.innerHTML = "Aucun résultat trouvé.";
+
+return;
+
+}
+
+
+
+const eleve = data[0];
+
+
+zone.innerHTML = `
+
+<h2>Résultat de ${eleve.nom} ${eleve.prenom}</h2>
+
+
+<table>
+
+<tr>
+<th>Semestre</th>
+<th>Matricule</th>
+<th>Classe</th>
+<th>Moyenne</th>
+<th>Rang</th>
+</tr>
+
+
+<tr>
+
+<td>${eleve.semestre}</td>
+<td>${eleve.matricule}</td>
+<td>${eleve.classe}</td>
+<td>${eleve.moyenne_semestrielle}</td>
+<td>${eleve.rang}</td>
+
+</tr>
+
+
+</table>
+
+`;
+
+});
 
 <script src="script.js"></script>
 
