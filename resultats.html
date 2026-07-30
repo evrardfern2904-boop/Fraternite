@@ -195,73 +195,147 @@ Natitingou - Bénin
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-function initFormulaireResultat(formId, nomId, classeId, resultatId) {
-  const zoneResultat = document.getElementById(resultatId);
+function rechercheResultat(formId, nomId, classeId, table, resultatId) {
 
-  try {
-    const SUPABASE_URL = "https://wvtkczhhhxtvhtgbiouz.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_67zbjKULBBMOE5beuZljLA_Yt6Dq0zI";
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const zone = document.getElementById(resultatId);
 
-    document.getElementById(formId).addEventListener("submit", async function(e) {
-      e.preventDefault();
+const SUPABASE_URL = "https://wvtkczhhhxtvhtgbiouz.supabase.co";
+const SUPABASE_KEY = "sb_publishable_67zbjKULBBMOE5beuZljLA_Yt6Dq0zI";
 
-      const nom = document.getElementById(nomId).value.trim();
-      const classe = document.getElementById(classeId).value;
-      console.log(nom, classe);
-      zoneResultat.innerHTML = "<p>Recherche en cours...</p>";
+const supabaseClient = window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
 
-      try {
-        const { data: eleves, error } = await supabase
-          .from("eleves")
-          .select("*")
-          .ilike("nom", `%${nom}%`)
-          .eq("classe", classe);
 
-        if (error) {
-          zoneResultat.innerHTML = "<p style='color:red;'>Erreur : " + error.message + "</p>";
-          return;
-        }
+document.getElementById(formId).addEventListener("submit", async(e)=>{
 
-        if (!eleves || eleves.length === 0) {
-          zoneResultat.innerHTML = "<p>Aucun résultat trouvé pour ce nom et cette classe.</p>";
-          return;
-        }
+e.preventDefault();
 
-        const eleve = eleves[0];
+const nom = document.getElementById(nomId).value.trim();
+const classe = document.getElementById(classeId).value.trim();
 
-        const { data: notes } = await supabase
-          .from("notes")
-          .select("*")
-          .eq("eleve_id", eleve.id);
 
-        let html = `<h2>Bulletin de ${eleve.nom} — ${eleve.classe}</h2>
-          <table>
-            <tr><th>Matière</th><th>Note /20</th></tr>`;
+zone.innerHTML = "Recherche en cours...";
 
-        notes.forEach(n => {
-          html += `<tr><td>${n.matiere}</td><td>${n.note}</td></tr>`;
-        });
 
-        html += `<tr><th>Moyenne Générale</th><th>${eleve.moyenne_generale}/20</th></tr>
-            <tr><th>Rang</th><th>${eleve.rang}</th></tr>
-          </table>`;
+const {data, error} = await supabaseClient
+.from(table)
+.select("*")
+.ilike("nom", `%${nom}%`)
+.eq("classe", classe);
 
-        zoneResultat.innerHTML = html;
 
-      } catch (err) {
-        zoneResultat.innerHTML = "<p style='color:red;'>Erreur JS : " + err.message + "</p>";
-      }
-    });
+if(error){
 
-  } catch (err) {
-    zoneResultat.innerHTML = "<p style='color:red;'>Erreur de chargement Supabase : " + err.message + "</p>";
-  }
+zone.innerHTML = "Erreur : " + error.message;
+return;
+
 }
 
-initFormulaireResultat("formResultatPrimaire", "nomPrimaire", "classePrimaire", "resultatPrimaire");
-initFormulaireResultat("formResultatSecondaire", "nomSecondaire", "classeSecondaire", "resultatSecondaire");
-                                                     </script>
+
+if(!data || data.length === 0){
+
+zone.innerHTML = "Aucun résultat trouvé.";
+return;
+
+}
+
+
+let resultat = data[0];
+
+
+let html = `
+<h2>Résultat de ${resultat.nom}</h2>
+
+<table border="1">
+
+<tr>
+<th>Nom</th>
+<td>${resultat.nom}</td>
+</tr>
+
+<tr>
+<th>Prénom</th>
+<td>${resultat.prenom || ""}</td>
+</tr>
+
+<tr>
+<th>Classe</th>
+<td>${resultat.classe}</td>
+</tr>
+`;
+
+
+if(table === "resultats_primaire"){
+
+html += `
+<tr>
+<th>Décision</th>
+<td>${resultat.decision || ""}</td>
+</tr>
+
+<tr>
+<th>Rang</th>
+<td>${resultat.rang || ""}</td>
+</tr>
+`;
+
+}
+
+
+if(table === "resulats_secondaire"){
+
+html += `
+<tr>
+<th>Semestre</th>
+<td>${resultat.semestre || ""}</td>
+</tr>
+
+<tr>
+<th>Moyenne</th>
+<td>${resultat.moyenne_semestrielle || ""}</td>
+</tr>
+
+<tr>
+<th>Rang</th>
+<td>${resultat.rang || ""}</td>
+</tr>
+`;
+
+}
+
+
+html += "</table>";
+
+zone.innerHTML = html;
+
+
+});
+
+}
+
+
+// Primaire
+rechercheResultat(
+"formresultat_primaire",
+"nomPrimaire",
+"classePrimaire",
+"resultats_primaire",
+"resultatPrimaire"
+);
+
+
+// Secondaire
+rechercheResultat(
+"formresultats_secondaire",
+"nomSecondaire",
+"classeSecondaire",
+"resulats_secondaire",
+"resultatSecondaire"
+);
+
+</script>                                                     </script>
 <script src="script.js"></script>
 
 </body>
