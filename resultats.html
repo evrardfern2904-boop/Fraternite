@@ -193,149 +193,96 @@ Natitingou - Bénin
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-function rechercheResultat(formId, nomId, classeId, table, resultatId) {
+try {
+  const SUPABASE_URL = "https://wvtkczhhhxtvhtgbiouz.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_67zbjKULBBMOE5beuZljLA_Yt6Dq0zI";
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const zone = document.getElementById(resultatId);
+  // ===== RÉSULTATS PRIMAIRE =====
+  document.getElementById("formResultatPrimaire").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const zone = document.getElementById("resultatPrimaire");
+    const nom = document.getElementById("nomPrimaire").value.trim();
+    const classe = document.getElementById("classePrimaire").value;
 
-const SUPABASE_URL = "https://wvtkczhhhxtvhtgbiouz.supabase.co";
-const SUPABASE_KEY = "sb_publishable_67zbjKULBBMOE5beuZljLA_Yt6Dq0zI";
+    zone.innerHTML = "<p>Recherche en cours...</p>";
 
-const supabaseClient = window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
+    try {
+      const { data, error } = await supabase
+        .from("resultats_primaire")
+        .select("*")
+        .or(`nom.ilike.%${nom}%,prenom.ilike.%${nom}%`)
+        .eq("classe", classe);
 
+      if (error) {
+        zone.innerHTML = "<p style='color:red;'>Erreur : " + error.message + "</p>";
+        return;
+      }
 
-document.getElementById(formId).addEventListener("submit", async(e)=>{
+      if (!data || data.length === 0) {
+        zone.innerHTML = "<p>Aucun résultat trouvé pour ce nom et cette classe.</p>";
+        return;
+      }
 
-e.preventDefault();
+      const eleve = data[0];
+      zone.innerHTML = `
+        <h3>Résultat de ${eleve.prenom} ${eleve.nom} — ${eleve.classe}</h3>
+        <table>
+          <tr><th>Décision</th><td>${eleve.decision ?? "-"}</td></tr>
+          <tr><th>Rang</th><td>${eleve.rang ?? "-"}</td></tr>
+        </table>`;
 
-const nom = document.getElementById(nomId).value.trim();
-const classe = document.getElementById(classeId).value.trim();
+    } catch (err) {
+      zone.innerHTML = "<p style='color:red;'>Erreur JS : " + err.message + "</p>";
+    }
+  });
 
+  // ===== RÉSULTATS SECONDAIRE =====
+  document.getElementById("formResultatSecondaire").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const zone = document.getElementById("resultatSecondaire");
+    const nom = document.getElementById("nomSecondaire").value.trim();
+    const classe = document.getElementById("classeSecondaire").value;
 
-zone.innerHTML = "Recherche en cours...";
+    zone.innerHTML = "<p>Recherche en cours...</p>";
 
+    try {
+      const { data, error } = await supabase
+        .from("resultats_secondaire")
+        .select("*")
+        .or(`nom.ilike.%${nom}%,prenom.ilike.%${nom}%`)
+        .eq("classe", classe);
 
-const {data, error} = await supabaseClient
-.from(table)
-.select("*")
-.ilike("nom", `%${nom}%`)
-.eq("classe", classe);
+      if (error) {
+        zone.innerHTML = "<p style='color:red;'>Erreur : " + error.message + "</p>";
+        return;
+      }
 
+      if (!data || data.length === 0) {
+        zone.innerHTML = "<p>Aucun résultat trouvé pour ce nom et cette classe.</p>";
+        return;
+      }
 
-if(error){
+      const eleve = data[0];
+      zone.innerHTML = `
+        <h3>Résultat de ${eleve.prenom} ${eleve.nom} — ${eleve.classe} (Semestre ${eleve.semestre ?? "-"})</h3>
+        <table>
+          <tr><th>Moyenne semestrielle</th><td>${eleve.moyenne_semestrielle ?? "-"}/20</td></tr>
+          <tr><th>Rang</th><td>${eleve.rang ?? "-"}</td></tr>
+        </table>`;
 
-zone.innerHTML = "Erreur : " + error.message;
-return;
+    } catch (err) {
+      zone.innerHTML = "<p style='color:red;'>Erreur JS : " + err.message + "</p>";
+    }
+  });
 
+} catch (err) {
+  document.body.insertAdjacentHTML("beforeend", "<p style='color:red;text-align:center;'>Erreur de chargement : " + err.message + "</p>");
 }
-
-
-if(!data || data.length === 0){
-
-zone.innerHTML = "Aucun résultat trouvé.";
-return;
-
-}
-
-
-let resultat = data[0];
-
-
-let html = `
-<h2>Résultat de ${resultat.nom}</h2>
-
-<table border="1">
-
-<tr>
-<th>Nom</th>
-<td>${resultat.nom}</td>
-</tr>
-
-<tr>
-<th>Prénom</th>
-<td>${resultat.prenom || ""}</td>
-</tr>
-
-<tr>
-<th>Classe</th>
-<td>${resultat.classe}</td>
-</tr>
-`;
-
-
-if(table === "resultats_primaire"){
-
-html += `
-<tr>
-<th>Décision</th>
-<td>${resultat.decision || ""}</td>
-</tr>
-
-<tr>
-<th>Rang</th>
-<td>${resultat.rang || ""}</td>
-</tr>
-`;
-
-}
-
-
-if(table === "resulats_secondaire"){
-
-html += `
-<tr>
-<th>Semestre</th>
-<td>${resultat.semestre || ""}</td>
-</tr>
-
-<tr>
-<th>Moyenne</th>
-<td>${resultat.moyenne_semestrielle || ""}</td>
-</tr>
-
-<tr>
-<th>Rang</th>
-<td>${resultat.rang || ""}</td>
-</tr>
-`;
-
-}
-
-
-html += "</table>";
-
-zone.innerHTML = html;
-
-
-});
-
-}
-
-
-// Primaire
-rechercheResultat(
-"formresultats_primaire",
-"nomPrimaire",
-"classePrimaire",
-"resultats_primaire",
-"resultatPrimaire"
-);
-
-
-// Secondaire
-rechercheResultat(
-"formresultats_secondaire",
-"nomSecondaire",
-"classeSecondaire",
-"resulats_secondaire",
-"resultatSecondaire"
-);
-
-</script>                                                     </script>
+</script>
+                                                   
 <script src="script.js"></script>
 
 </body>
