@@ -406,12 +406,12 @@ img{
 }
 
 nav ul li a{
-    color:yellow !important;
+    color:lightblue !important;
 }
 
 nav ul li a:link,
 nav ul li a:visited,
 nav ul li a:hover,
 nav ul li a:active{
-    color:green !important;
+    color:lightgreen !important;
 }
