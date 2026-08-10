@@ -66,92 +66,61 @@ background:#f2f2f2;
 
 </header>
 
-<section>
+  <section>
 
 <h2>Calendrier scolaire</h2>
 
-<p align="center">
-
+<p style="max-width:700px;margin:0 auto 30px auto;text-align:center;">
 Retrouvez les principales activités prévues durant l'année scolaire.
-
 </p>
 
-<table>
-
+<table id="tableauCalendrier">
+<thead>
 <tr>
 <th>Événement</th>
 <th>Période</th>
 </tr>
-
-<tr>
-<td>Rentrée scolaire</td>
-<td>14 Septembre</td>
-</tr>
-
-<tr>
-<td>Composition du 1er trimestre</td>
-<td>Novembre</td>
-</tr>
-
-<tr>
-<td>Congés de Noël</td>
-<td>Décembre</td>
-</tr>
-
-<tr>
-<td>Reprise des cours</td>
-<td>Janvier</td>
-</tr>
-
-<tr>
-<td>Composition du 2e trimestre</td>
-<td>Mars</td>
-</tr>
-
-  <tr>
-<td>Congés de détente</td>
-<td>février</td>
-  </tr>
-
-  <tr>
-<td>Reprise des cours</td>
-<td>Mars</td>
-  </tr>
-
-  <tr>
-<td>Composition du 3e trimestre</td>
-<td>Avril</td>
-  </tr>
-
-<tr>
-<td>Congés de Pâques</td>
-<td>Avril</td>
-</tr>
-
-  <tr>
-<td>Reprise des cours</td>
-<td>Avril</td>
-  </tr>
-
-<tr>
-<td>Examens blancs</td>
-<td>Mai</td>
-</tr>
-
-<tr>
-<td>Examens de fin d'année</td>
-<td>Juin</td>
-</tr>
-
-<tr>
-<td>Proclamation des résultats et vacances</td>
-<td>Juin</td>
-</tr>
-
+</thead>
+<tbody id="corpsTableauCalendrier">
+</tbody>
 </table>
 
 </section>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+try {
+  const SUPABASE_URL = "https://wvtkczhhhxtvhtgbiouz.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_67zbjKULBBMOE5beuZljLA_Yt6Dq0zI";
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  async function chargerCalendrier() {
+    const corps = document.getElementById("corpsTableauCalendrier");
+
+    const { data, error } = await supabase
+      .from("calendrier")
+      .select("*")
+      .order("ordre", { ascending: true });
+
+    if (error) {
+      corps.innerHTML = `<tr><td colspan="2" style="color:red;">Erreur : ${error.message}</td></tr>`;
+      return;
+    }
+
+    corps.innerHTML = data.map(e => `
+      <tr>
+        <td>${e.evenement}</td>
+        <td>${e.periode && e.periode.trim() !== "" ? e.periode : "-"}</td>
+      </tr>
+    `).join("");
+  }
+
+  chargerCalendrier();
+
+} catch (err) {
+  document.getElementById("corpsTableauCalendrier").innerHTML = `<tr><td colspan="2" style="color:red;">Erreur de chargement : ${err.message}</td></tr>`;
+}
+      </script>
 <footer>
 
 <p>
