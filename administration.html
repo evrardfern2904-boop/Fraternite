@@ -44,121 +44,49 @@
 
 <h2>Administration de l'établissement</h2>
 
-<p align="center">
-
+<p style="max-width:700px;margin:0 auto 40px auto;text-align:center;">
 L'École Fraternité dispose d'une équipe administrative qualifiée qui assure le bon fonctionnement de l'établissement et l'encadrement des apprenants.
-
 </p>
 
-<br>
-
-<div class="cartes">
-
-<div class="carte">
-
-<h3>👨 Directeur</h3>
-
-<p>
-
-Nom : ....................................
-
-<br>
-
-Téléphone : ....................................
-
-</p>
-
-</div>
-
-<div class="carte">
-
-<h3>👩 Directrice des études</h3>
-
-<p>
-
-Nom : ....................................
-
-<br>
-
-Téléphone : ....................................
-
-</p>
-
-</div>
-
-<div class="carte">
-
-<h3>👮 Surveillant Général</h3>
-
-<p>
-
-Nom : ....................................
-
-</p>
-
-</div>
-
-<div class="carte">
-
-<h3>💰 Comptable</h3>
-
-<p>
-
-Gestion financière de l'établissement.
-
-</p>
-
-</div>
-
-<div class="carte">
-
-<h3>📝 Secrétariat</h3>
-
-<p>
-
-Accueil des parents et gestion des dossiers scolaires.
-
-</p>
-
-</div>
-
-<div class="carte">
-
-<h3>👨‍🏫 Corps enseignant</h3>
-
-<p>
-
-Des enseignants qualifiés assurent les cours de la maternelle à la Terminale.
-
-</p>
-
-</div>
-
-</div>
+<div id="listeAdministration" style="max-width:700px;margin:auto;display:flex;flex-direction:column;gap:20px;"></div>
 
 </section>
 
-<section>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+try {
+  const SUPABASE_URL = "https://wvtkczhhhxtvhtgbiouz.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_67zbjKULBBMOE5beuZljLA_Yt6Dq0zI";
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-<h2>Nos responsabilités</h2>
+  async function chargerAdministration() {
+    const zone = document.getElementById("listeAdministration");
 
-<ul>
+    const { data, error } = await supabase
+      .from("administration")
+      .select("*")
+      .order("ordre", { ascending: true });
 
-<li>Organisation des cours</li>
+    if (error) {
+      zone.innerHTML = "<p style='color:red;'>Erreur : " + error.message + "</p>";
+      return;
+    }
 
-<li>Gestion des inscriptions</li>
+    zone.innerHTML = data.map(personne => `
+      <div style="background:#a9d6e5;border-radius:10px;padding:25px;text-align:center;">
+        <h3>${personne.emoji ?? ""} ${personne.poste}</h3>
+        <p>Nom : ${personne.nom && personne.nom.trim() !== "" ? personne.nom : "...................................."}</p>
+        ${personne.telephone && personne.telephone.trim() !== "" ? `<p>Téléphone : ${personne.telephone}</p>` : (personne.poste !== "Surveillant Général" ? `<p>Téléphone : ....................................</p>` : "")}
+      </div>
+    `).join("");
+  }
 
-<li>Suivi des élèves</li>
+  chargerAdministration();
 
-<li>Organisation des examens</li>
-
-<li>Publication des résultats</li>
-
-<li>Encadrement pédagogique</li>
-
-</ul>
-
-</section>
+} catch (err) {
+  document.getElementById("listeAdministration").innerHTML = "<p style='color:red;'>Erreur de chargement : " + err.message + "</p>";
+}
+</script>
 
 <footer>
 
