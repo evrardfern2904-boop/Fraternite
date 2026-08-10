@@ -33,8 +33,8 @@
 
 <h2>Frais de scolarité (Paiement en 3 tranches)</h2>
 
-<table>
-
+<table id="tableauTarifs">
+<thead>
 <tr>
 <th>Classe</th>
 <th>1ère tranche</th>
@@ -42,39 +42,52 @@
 <th>3ème tranche</th>
 <th>Total</th>
 </tr>
-
-<tr><td>Petite Section (PS)</td><td>20 000 FCFA</td><td>20 000 FCFA</td><td>20 000 FCFA</td><td>60 000 FCFA</td></tr>
-
-<tr><td>Moyenne Section (MS)</td><td>20 000 FCFA</td><td>20 000 FCFA</td><td>20 000 FCFA</td><td>60 000 FCFA</td></tr>
-
-<tr><td>Grande Section (GS)</td><td>20 000 FCFA</td><td>20 000 FCFA</td><td>20 000 FCFA</td><td>60 000 FCFA</td></tr>
-
-<tr><td>CI</td><td>25 000 FCFA</td><td>25 000 FCFA</td><td>25 000 FCFA</td><td>75 000 FCFA</td></tr>
-
-<tr><td>CP</td><td>25 000 FCFA</td><td>25 000 FCFA</td><td>25 000 FCFA</td><td>75 000 FCFA</td></tr>
-
-<tr><td>CE1</td><td>25 000 FCFA</td><td>25 000 FCFA</td><td>25 000 FCFA</td><td>75 000 FCFA</td></tr>
-
-<tr><td>CE2</td><td>25 000 FCFA</td><td>25 000 FCFA</td><td>25 000 FCFA</td><td>75 000 FCFA</td></tr>
-
-<tr><td>CM1</td><td>25 000 FCFA</td><td>25 000 FCFA</td><td>25 000 FCFA</td><td>75 000 FCFA</td></tr>
-
-<tr><td>CM2</td><td>25 000 FCFA</td><td>25 000 FCFA</td><td>25 000 FCFA</td><td>75 000 FCFA</td></tr>
-
-<tr><td>6e</td><td>35 000 FCFA</td><td>35 000 FCFA</td><td>35 000 FCFA</td><td>105 000 FCFA</td></tr>
-
-<tr><td>5e</td><td>35 000 FCFA</td><td>35 000 FCFA</td><td>35 000 FCFA</td><td>105 000 FCFA</td></tr>
-
-<tr><td>4e</td><td>35 000 FCFA</td><td>35 000 FCFA</td><td>35 000 FCFA</td><td>105 000 FCFA</td></tr>
-
-<tr><td>3e</td><td>35 000 FCFA</td><td>35 000 FCFA</td><td>35 000 FCFA</td><td>105 000 FCFA</td></tr>
-
-<tr><td>Seconde</td><td>40 000 FCFA</td><td>40 000 FCFA</td><td>40 000 FCFA</td><td>120 000 FCFA</td></tr>
-
-<tr><td>Première</td><td>40 000 FCFA</td><td>40 000 FCFA</td><td>40 000 FCFA</td><td>120 000 FCFA</td></tr>
-
-<tr><td>Terminale</td><td>45 000 FCFA</td><td>45 000 FCFA</td><td>45 000 FCFA</td><td>135 000 FCFA</td></tr>
-
+</thead>
+<tbody id="corpsTableauTarifs">
+</tbody>
 </table>
 
 </section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+try {
+  const SUPABASE_URL = "https://wvtkczhhhxtvhtgbiouz.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_67zbjKULBBMOE5beuZljLA_Yt6Dq0zI";
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  function formatFCFA(montant) {
+    if (montant === null || montant === undefined) return "-";
+    return Number(montant).toLocaleString("fr-FR") + " FCFA";
+  }
+
+  async function chargerTarifs() {
+    const corps = document.getElementById("corpsTableauTarifs");
+
+    const { data, error } = await supabase
+      .from("tarifs")
+      .select("*")
+      .order("ordre", { ascending: true });
+
+    if (error) {
+      corps.innerHTML = `<tr><td colspan="5" style="color:red;">Erreur : ${error.message}</td></tr>`;
+      return;
+    }
+
+    corps.innerHTML = data.map(t => `
+      <tr>
+        <td>${t.classe}</td>
+        <td>${formatFCFA(t.tranche_1)}</td>
+        <td>${formatFCFA(t.tranche_2)}</td>
+        <td>${formatFCFA(t.tranche_3)}</td>
+        <td>${formatFCFA(t.total)}</td>
+      </tr>
+    `).join("");
+  }
+
+  chargerTarifs();
+
+} catch (err) {
+  document.getElementById("corpsTableauTarifs").innerHTML = `<tr><td colspan="5" style="color:red;">Erreur de chargement : ${err.message}</td></tr>`;
+}
+</script>
