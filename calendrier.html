@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendrier scolaire - École Fraternité</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:30px;
+background:white;
+}
+
+table th, table td{
+border:1px solid #ddd;
+padding:15px;
+text-align:center;
+}
+
+table th{
+background:#0056b3;
+color:white;
+}
+
+table tr:nth-child(even){
+background:#f2f2f2;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+<h1>École Fraternité</h1>
+<p>Excellence - Discipline - Réussite</p>
+</div>
+
+<nav>
+
+<ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="apropos.html">À propos</a></li>
+            <li><a href="calendrier.html">Calendrier scolaires</a></li>
+             <li><a href="formations.html">Cycles</a></li>
+            <li><a href="admission.html">Condition d'admission</a></li>
+            <li><a href="tarif.html">Tarifs</a></li>
+            <li><a href="paiement.html">Payer la contribution</a></li>
+            <li><a href="administration.html">Administration</a></li>
+            <li><a href="Emploi du temps.html">Emploi du temps</a></li>
+            <li><a href="galerie.html">Galerie</a></li>
+            <li><a href="resultats.html">Résultats</a></li>
+            <li><a href="contact.html">Contact et Localisation</a></li>
+
+</ul>
+
+</nav>
+
+</header>
+<section>
+
+<h2>Calendrier scolaire</h2>
+
+<p style="max-width:700px;margin:0 auto 30px auto;text-align:center;">
+Retrouvez les principales activités prévues durant l'année scolaire.
+</p>
+
+<table id="tableauCalendrier">
+<thead>
+<tr>
+<th>Événement</th>
+<th>Période</th>
+</tr>
+</thead>
+<tbody id="corpsTableauCalendrier">
+</tbody>
+</table>
+
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+try {
+  const SUPABASE_URL = "https://wvtkczhhhxtvhtgbiouz.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_67zbjKULBBMOE5beuZljLA_Yt6Dq0zI";
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  async function chargerCalendrier() {
+    const corps = document.getElementById("corpsTableauCalendrier");
+
+    const { data, error } = await supabase
+      .from("calendrier")
+      .select("*")
+      .order("ordre", { ascending: true });
+
+    if (error) {
+      corps.innerHTML = `<tr><td colspan="2" style="color:red;">Erreur : ${error.message}</td></tr>`;
+      return;
+    }
+
+    corps.innerHTML = data.map(e => `
+      <tr>
+        <td>${e.evenement}</td>
+        <td>${e.periode && e.periode.trim() !== "" ? e.periode : "-"}</td>
+      </tr>
+    `).join("");
+  }
+
+  chargerCalendrier();
+
+} catch (err) {
+  document.getElementById("corpsTableauCalendrier").innerHTML = `<tr><td colspan="2" style="color:red;">Erreur de chargement : ${err.message}</td></tr>`;
+}
+</script><footer>
+
+<p>
+
+École Fraternité
+
+<br>
+
+Natitingou - Bénin
+
+<br><br>
+
+© 2026 Tous droits réservés
+
+</p>
+
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>

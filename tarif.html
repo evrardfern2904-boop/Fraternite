@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tarif - École Fraternité</title>
+
+<link rel="stylesheet" href="style.css">
+<header>
+
+<div class="logo">
+    <h1>École Fraternité</h1>
+    <p>Excellence - Discipline - Réussite</p>
+</div>
+
+<nav>
+    <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="apropos.html">À propos</a></li>
+            <li><a href="calendrier.html">Calendrier scolaires</a></li>
+            <li><a href="formations.html">Cycles</a></li>
+            <li><a href="admission.html">Condition d'admission</a></li>
+            <li><a href="tarif.html">Tarifs</a></li>
+            <li><a href="paiement.html">Payer la contribution</a></li>
+            <li><a href="administration.html">Administration</a></li>
+            <li><a href="Emploi du temps.html">Emploi du temps</a></li>
+            <li><a href="galerie.html">Galerie</a></li>
+            <li><a href="resultats.html">Résultats</a></li>
+            <li><a href="contact.html">Contact et Localisation</a></li>
+    </ul>
+</nav>
+
+</header>
+<section>
+
+<h2>Frais de scolarité (Paiement en 3 tranches)</h2>
+
+<table id="tableauTarifs">
+<thead>
+<tr>
+<th>Classe</th>
+<th>1ère tranche</th>
+<th>2ème tranche</th>
+<th>3ème tranche</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody id="corpsTableauTarifs">
+</tbody>
+</table>
+
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+try {
+  const SUPABASE_URL = "https://wvtkczhhhxtvhtgbiouz.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_67zbjKULBBMOE5beuZljLA_Yt6Dq0zI";
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  function formatFCFA(montant) {
+    if (montant === null || montant === undefined) return "-";
+    return Number(montant).toLocaleString("fr-FR") + " FCFA";
+  }
+
+  async function chargerTarifs() {
+    const corps = document.getElementById("corpsTableauTarifs");
+
+    const { data, error } = await supabase
+      .from("tarifs")
+      .select("*")
+      .order("ordre", { ascending: true });
+
+    if (error) {
+      corps.innerHTML = `<tr><td colspan="5" style="color:red;">Erreur : ${error.message}</td></tr>`;
+      return;
+    }
+
+    corps.innerHTML = data.map(t => `
+      <tr>
+        <td>${t.classe}</td>
+        <td>${formatFCFA(t.tranche_1)}</td>
+        <td>${formatFCFA(t.tranche_2)}</td>
+        <td>${formatFCFA(t.tranche_3)}</td>
+        <td>${formatFCFA(t.total)}</td>
+      </tr>
+    `).join("");
+  }
+
+  chargerTarifs();
+
+} catch (err) {
+  document.getElementById("corpsTableauTarifs").innerHTML = `<tr><td colspan="5" style="color:red;">Erreur de chargement : ${err.message}</td></tr>`;
+}
+</script>
+<footer>
+
+<p>
+
+École Fraternité
+
+<br>
+
+Natitingou - Bénin
+
+<br><br>
+
+© 2026 Tous droits réservés
+
+</p>
+
+</footer>

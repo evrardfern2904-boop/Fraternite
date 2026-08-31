@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - École Fraternité</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <h1>École Fraternité</h1>
+        <p>Excellence - Discipline - Réussite</p>
+    </div>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="apropos.html">À propos</a></li>
+             <li><a href="formations.html">Cycles</a></li>
+            <li><a href="admission.html">Condition d'admission</a></li>
+            <li><a href="tarif.html">Tarifs</a></li>
+            <li><a href="inscription.html">Inscription</a></li>
+            <li><a href="administration.html">Administration</a></li>
+            <li><a href="calendrier.html">Calendrier scolaire</a></li>
+            <li><a href="Emploi du temps.html">Emploi du temps</a></li>
+            <li><a href="galerie.html">Galerie</a></li>
+            <li><a href="resultats.html">Résultats</a></li>
+            <li><a href="contact.html">Contact et Localisation</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section>
+
+<!-- =========================================================
+     💳 PAGE / SECTION PAIEMENT
+     FRATERNITÉ
+     
+     IMPORTANT :
+     Pour modifier les numéros de paiement, cherche simplement
+     "MODIFIER LE CODE" dans ce bloc.
+     ========================================================= --><section id="paiement" class="payment-section"><div class="payment-container">
+
+    <!-- =================================================
+         TITRE
+         ================================================= -->
+
+    <div class="section-title payment-title">
+
+        <span>PAIEMENT</span>
+
+        <h2>Contribution scolaire</h2>
+
+        <p>
+            Effectuez le paiement de la contribution scolaire
+            en utilisant l'un des opérateurs ci-dessous.
+        </p>
+
+    </div>
+
+
+    <!-- =================================================
+         CARTES DES OPÉRATEURS
+         ================================================= -->
+
+    <div class="payment-cards">
+
+
+        <!-- =================================================
+             🟡 MTN MOMO
+             ================================================= -->
+
+        <div class="payment-card mtn-card">
+
+            <!-- Logo / nom de l'opérateur -->
+            <div class="operator-header">
+
+                <div class="operator-logo mtn-logo">
+                    MTN
+                </div>
+
+                <div>
+                    <h3>MTN MoMo</h3>
+                    <p>Paiement mobile</p>
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 ⚠️ MODIFIER LE CODE MTN ICI
+                 
+                 Exemple :
+                 <strong id="mtnCode">0150000000</strong>
+                 ================================================= -->
+
+            <div class="code-box">
+
+                <span>CODE DE PAIEMENT</span>
+
+                <!-- 🟡 CODE MTN À MODIFIER -->
+                <strong id="mtnCode">
+                    XXXXXXXXXX
+                </strong>
+
+            </div>
+
+
+            <!-- Bouton copier -->
+            <button
+                class="copy-btn"
+                onclick="copyPaymentCode('mtnCode', this)">
+
+                📋 Copier le code
+
+            </button>
+
+        </div>
+
+
+
+        <!-- =================================================
+             🔵 MOOV MONEY
+             ================================================= -->
+
+        <div class="payment-card moov-card">
+
+            <!-- Logo / nom de l'opérateur -->
+            <div class="operator-header">
+
+                <div class="operator-logo moov-logo">
+                    Moov
+                </div>
+
+                <div>
+                    <h3>Moov Money</h3>
+                    <p>Paiement mobile</p>
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 ⚠️ MODIFIER LE CODE MOOV ICI
+                 ================================================= -->
+
+            <div class="code-box">
+
+                <span>CODE DE PAIEMENT</span>
+
+                <!-- 🔵 CODE MOOV À MODIFIER -->
+                <strong id="moovCode">
+                    XXXXXXXXXX
+                </strong>
+
+            </div>
+
+
+            <!-- Bouton copier -->
+            <button
+                class="copy-btn"
+                onclick="copyPaymentCode('moovCode', this)">
+
+                📋 Copier le code
+
+            </button>
+
+        </div>
+
+
+
+        <!-- =================================================
+             🟢 CELTIIS MONEY
+             ================================================= -->
+
+        <div class="payment-card celtiis-card">
+
+            <!-- Logo / nom de l'opérateur -->
+            <div class="operator-header">
+
+                <div class="operator-logo celtiis-logo">
+                    C
+                </div>
+
+                <div>
+                    <h3>Celtiis Money</h3>
+                    <p>Paiement mobile</p>
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 ⚠️ MODIFIER LE CODE CELTIIS ICI
+                 ================================================= -->
+
+            <div class="code-box">
+
+                <span>CODE DE PAIEMENT</span>
+
+                <!-- 🟢 CODE CELTIIS À MODIFIER -->
+                <strong id="celtiisCode">
+                    XXXXXXXXXX
+                </strong>
+
+            </div>
+
+
+            <!-- Bouton copier -->
+            <button
+                class="copy-btn"
+                onclick="copyPaymentCode('celtiisCode', this)">
+
+                📋 Copier le code
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================================
+         📢 CONSIGNE IMPORTANTE
+         ========================================================= -->
+
+    <div class="payment-instruction">
+
+        <div class="warning-icon">
+            !
+        </div>
+
+        <div>
+
+            <h3>Important</h3>
+
+            <p>
+                <strong>
+                    Utilisez l’un de ces codes pour payer et mettez
+                    le nom de l’élève plus sa classe comme motif.
+                </strong>
+            </p>
+
+            <!--
+            EXEMPLE DE MOTIF :
+
+            Jean Dupont - 3ème
+
+            Tu peux modifier cette partie plus tard.
+            -->
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================================
+         📝 INFORMATIONS COMPLÉMENTAIRES
+         
+         Cette partie est volontairement facile à modifier.
+         
+         Tu peux ajouter plus tard :
+         - le montant
+         - une date limite
+         - un numéro de téléphone
+         - une autre consigne
+         - etc.
+         ========================================================= -->
+
+    <div class="payment-extra">
+
+        <h3>Informations complémentaires</h3>
+
+        <!-- ✏️ MODIFIER / COMPLÉTER CE TEXTE ICI -->
+
+        <p>
+            Pour toute question concernant le paiement,
+            veuillez contacter l’administration de l’établissement.
+        </p>
+
+    </div>
+
+</div>
+
+</section><!-- =========================================================
+     🔗 MENU
+
+     Dans ton menu, remplace :
+
+     Inscription
+
+     par :
+
+     Paiement
+     ========================================================= --><!-- Exemple :
+
+<a href="#paiement">Paiement</a>
+
+-->
+
+</section>
+
+<footer>
+
+<p>
+
+École Fraternité
+
+<br>
+
+Natitingou - Bénin
+
+<br><br>
+
+© 2026 Tous droits réservés
+
+</p>
+
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Résultats - École Fraternité</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:30px;
+background:white;
+}
+
+th,td{
+border:1px solid #ddd;
+padding:12px;
+text-align:center;
+}
+
+th{
+background:#0056b3;
+color:white;
+}
+
+tr:nth-child(even){
+background:#f5f5f5;
+}
+
+.recherche{
+max-width:700px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 5px 10px rgba(0,0,0,.2);
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+<h1>École Fraternité</h1>
+<p>Excellence - Discipline - Réussite</p>
+</div>
+
+<nav>
+
+<ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="apropos.html">À propos</a></li>
+            <li><a href="calendrier.html">Calendrier scolaires</a></li>
+            <li><a href="formations.html">Cycles</a></li>
+            <li><a href="admission.html">Condition d'admission</a></li>
+            <li><a href="tarif.html">Tarifs</a></li>
+            <li><a href="paiement.html">Payer la contribution</a></li>
+            <li><a href="administration.html">Administration</a></li>
+            <li><a href="Emploi du temps.html">Emploi du temps</a></li>
+            <li><a href="galerie.html">Galerie</a></li>
+            <li><a href="resultats.html">Résultats</a></li>
+            <li><a href="contact.html">Contact et Localisation</a></li>
+</ul>
+
+</nav>
+
+</header>
+
+<section>
+
+<h2>Résultats primaire</h2>
+
+<div class="recherche">
+
+<form id="formResultatPrimaire">
+
+<label>Nom et prénom de l'élève</label>
+
+<input
+type="text"
+id="nomPrimaire"
+placeholder="Exemple : Diallo Awa"
+required>
+
+<label>Classe</label>
+
+<select id="classePrimaire" required>
+
+<option value="">Choisir la classe</option>
+
+<option>CI</option>
+<option>CP</option>
+<option>CE1</option>
+<option>CE2</option>
+<option>CM1</option>
+<option>CM2</option>
+
+</select>
+
+<button type="submit">
+
+Consulter les résultats
+
+</button>
+
+</form>
+
+</div>
+
+<div id="resultatPrimaire" style="max-width:700px;margin:30px auto;"></div>
+
+</section>
+
+<section>
+
+<h2 style="margin-top:60px;">Résultats secondaire</h2>
+
+<div class="recherche">
+
+<form id="formResultatSecondaire">
+
+<label>Nom et prénom de l'élève</label>
+
+<input
+type="text"
+id="nomSecondaire"
+placeholder="Exemple : FOX Tom"
+required>
+
+<label>Classe</label>
+
+<select id="classeSecondaire" required>
+
+<option value="">Choisir la classe</option>
+
+<option>6e</option>
+<option>5e</option>
+<option>4e</option>
+<option>3e</option>
+
+<option>Seconde A1</option>
+<option>Seconde A2</option>  
+<option>Seconde D</option>  
+<option>Première A1</option>  
+<option>Première A2</option>  
+<option>Première D</option>  
+<option>Terminale A1</option>  
+<option>Terminale A2</option>  
+<option>Terminale D</option>
+
+</select>
+
+<button type="submit">
+
+Consulter les résultats
+
+</button>
+
+</form>
+
+</div>
+
+<div id="resultatSecondaire" style="max-width:700px;margin:30px auto;"></div>
+
+</section>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+try {
+  const SUPABASE_URL = "https://wvtkczhhhxtvhtgbiouz.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_67zbjKULBBMOE5beuZljLA_Yt6Dq0zI";
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // ===== RÉSULTATS PRIMAIRE =====
+  document.getElementById("formResultatPrimaire").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const zone = document.getElementById("resultatPrimaire");
+    const nom = document.getElementById("nomPrimaire").value.trim();
+    const classe = document.getElementById("classePrimaire").value;
+
+    zone.innerHTML = "<p>Recherche en cours...</p>";
+
+    try {
+      const { data, error } = await supabase
+        .from("resultats_primaire")
+        .select("*")
+        .or(`nom.ilike.%${nom}%,prenom.ilike.%${nom}%`)
+        .eq("classe", classe);
+
+      if (error) {
+        zone.innerHTML = "<p style='color:red;'>Erreur : " + error.message + "</p>";
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        zone.innerHTML = "<p>Aucun résultat trouvé pour ce nom et cette classe.</p>";
+        return;
+      }
+
+      const eleve = data[0];
+      zone.innerHTML = `
+        <h3>Résultat de ${eleve.prenom} ${eleve.nom} — ${eleve.classe}</h3>
+        <table>
+          <tr><th>Décision</th><td>${eleve.decision ?? "-"}</td></tr>
+          <tr><th>Rang</th><td>${eleve.rang ?? "-"}</td></tr>
+        </table>`;
+
+    } catch (err) {
+      zone.innerHTML = "<p style='color:red;'>Erreur JS : " + err.message + "</p>";
+    }
+  });
+
+  // ===== RÉSULTATS SECONDAIRE =====
+  document.getElementById("formResultatSecondaire").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const zone = document.getElementById("resultatSecondaire");
+    const nom = document.getElementById("nomSecondaire").value.trim();
+    const classe = document.getElementById("classeSecondaire").value;
+
+    zone.innerHTML = "<p>Recherche en cours...</p>";
+
+    try {
+      const { data, error } = await supabase
+        .from("resultats_secondaire")
+        .select("*")
+        .or(`nom.ilike.%${nom}%,prenom.ilike.%${nom}%`)
+        .eq("classe", classe);
+
+      if (error) {
+        zone.innerHTML = "<p style='color:red;'>Erreur : " + error.message + "</p>";
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        zone.innerHTML = "<p>Aucun résultat trouvé pour ce nom et cette classe.</p>";
+        return;
+      }
+
+      const eleve = data[0];
+      zone.innerHTML = `
+        <h3>Résultat de ${eleve.prenom} ${eleve.nom} — ${eleve.classe} (Semestre ${eleve.semestre ?? "-"})</h3>
+        <table>
+          <tr><th>Moyenne semestrielle</th><td>${eleve.moyenne_semestrielle ?? "-"}/20</td></tr>
+          <tr><th>Rang</th><td>${eleve.rang ?? "-"}</td></tr>
+        </table>`;
+
+    } catch (err) {
+      zone.innerHTML = "<p style='color:red;'>Erreur JS : " + err.message + "</p>";
+    }
+  });
+
+} catch (err) {
+  document.body.insertAdjacentHTML("beforeend", "<p style='color:red;text-align:center;'>Erreur de chargement : " + err.message + "</p>");
+}
+</script>
+                                                   
+<script src="script.js"></script>
+<footer>
+
+<p>
+
+École Fraternité
+
+<br>
+
+Natitingou - Bénin
+
+<br><br>
+
+© 2026 Tous droits réservés
+
+</p>
+
+</footer>
+
+</body>
+
+</html>
