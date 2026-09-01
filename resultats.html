@@ -149,13 +149,13 @@ required>
 <option>3e</option>
 
 <option>Seconde A1</option>
-<option>Seconde A2</option>  
-<option>Seconde D</option>  
-<option>Première A1</option>  
-<option>Première A2</option>  
-<option>Première D</option>  
-<option>Terminale A1</option>  
-<option>Terminale A2</option>  
+<option>Seconde A2</option>
+<option>Seconde D</option>
+<option>Première A1</option>
+<option>Première A2</option>
+<option>Première D</option>
+<option>Terminale A1</option>
+<option>Terminale A2</option>
 <option>Terminale D</option>
 
 </select>
@@ -176,124 +176,130 @@ Consulter les résultats
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
 try {
   const SUPABASE_URL = "https://wvtkczhhhxtvhtgbiouz.supabase.co";
   const SUPABASE_KEY = "sb_publishable_67zbjKULBBMOE5beuZljLA_Yt6Dq0zI";
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
- // ===== RÉSULTATS PRIMAIRE =====
-document.getElementById("formResultatPrimaire").addEventListener("submit", async function(e) {
-  e.preventDefault();
-  const zone = document.getElementById("resultatPrimaire");
-  const nom = document.getElementById("nomPrimaire").value.trim();
-  const classe = document.getElementById("classePrimaire").value;
+  // ===== RÉSULTATS PRIMAIRE =====
+  document.getElementById("formResultatPrimaire").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const zone = document.getElementById("resultatPrimaire");
+    const nom = document.getElementById("nomPrimaire").value.trim();
+    const classe = document.getElementById("classePrimaire").value;
 
-  zone.innerHTML = "<p>Recherche en cours...</p>";
+    zone.innerHTML = "<p>Recherche en cours...</p>";
 
-  try {
-    const { data, error } = await supabase
-      .from("resultats_primaire")
-      .select("*")
-      .eq("classe", classe);
+    try {
+      const { data, error } = await supabase
+        .from("resultats_primaire")
+        .select("*")
+        .eq("classe", classe);
 
-    if (error) {
-      zone.innerHTML = "<p style='color:red;'>Erreur : " + error.message + "</p>";
-      return;
+      if (error) {
+        zone.innerHTML = "<p style='color:red;'>Erreur : " + error.message + "</p>";
+        return;
+      }
+
+      console.log("Données reçues (primaire) :", data);
+
+      const mots = nom.toLowerCase().split(/\s+/).filter(m => m !== "");
+
+      const resultats = (data || []).filter(eleve => {
+        const nomComplet = `${eleve.nom ?? ""} ${eleve.prenom ?? ""}`.toLowerCase();
+        return mots.every(mot => nomComplet.includes(mot));
+      });
+
+      if (resultats.length === 0) {
+        zone.innerHTML = "<p>Aucun résultat trouvé pour ce nom et cette classe.</p>";
+        return;
+      }
+
+      const eleve = resultats[0];
+      zone.innerHTML = `
+        <h3>Résultat de ${eleve.prenom} ${eleve.nom} — ${eleve.classe}</h3>
+        <table>
+          <tr><th>Décision</th><td>${eleve.decision ?? "-"}</td></tr>
+          <tr><th>Rang</th><td>${eleve.rang ?? "-"}</td></tr>
+        </table>`;
+
+    } catch (err) {
+      zone.innerHTML = "<p style='color:red;'>Erreur JS : " + err.message + "</p>";
     }
+  });
 
-    const mots = nom.toLowerCase().split(/\s+/).filter(m => m !== "");
+  // ===== RÉSULTATS SECONDAIRE =====
+  document.getElementById("formResultatSecondaire").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const zone = document.getElementById("resultatSecondaire");
+    const nom = document.getElementById("nomSecondaire").value.trim();
+    const classe = document.getElementById("classeSecondaire").value;
 
-    const resultats = (data || []).filter(eleve => {
-      const nomComplet = `${eleve.nom ?? ""} ${eleve.prenom ?? ""}`.toLowerCase();
-      return mots.every(mot => nomComplet.includes(mot));
-    });
+    zone.innerHTML = "<p>Recherche en cours...</p>";
 
-    if (resultats.length === 0) {
-      zone.innerHTML = "<p>Aucun résultat trouvé pour ce nom et cette classe.</p>";
-      return;
+    try {
+      const { data, error } = await supabase
+        .from("resultats_secondaire")
+        .select("*")
+        .eq("classe", classe)
+        .order("semestre", { ascending: true });
+
+      if (error) {
+        zone.innerHTML = "<p style='color:red;'>Erreur : " + error.message + "</p>";
+        return;
+      }
+
+      console.log("Données reçues (secondaire) :", data);
+
+      const mots = nom.toLowerCase().split(/\s+/).filter(m => m !== "");
+
+      const resultats = (data || []).filter(eleve => {
+        const nomComplet = `${eleve.nom ?? ""} ${eleve.prenom ?? ""}`.toLowerCase();
+        return mots.every(mot => nomComplet.includes(mot));
+      });
+
+      if (resultats.length === 0) {
+        zone.innerHTML = "<p>Aucun résultat trouvé pour ce nom et cette classe.</p>";
+        return;
+      }
+
+      const eleve = resultats[0];
+
+      const lignesSemestres = resultats.map(s => `
+        <tr>
+          <td>Semestre ${s.semestre}</td>
+          <td>${s.moyenne_semestrielle ?? "-"}/20</td>
+          <td>${s.rang ?? "-"}</td>
+        </tr>
+      `).join("");
+
+      const moyennesValides = resultats
+        .map(s => s.moyenne_semestrielle)
+        .filter(m => m !== null && m !== undefined);
+
+      const moyenneGenerale = moyennesValides.length > 0
+        ? (moyennesValides.reduce((a, b) => a + Number(b), 0) / moyennesValides.length).toFixed(2)
+        : "-";
+
+      zone.innerHTML = `
+        <h3>Résultats de ${eleve.prenom} ${eleve.nom} — ${eleve.classe}</h3>
+        <table>
+          <tr><th>Période</th><th>Moyenne</th><th>Rang</th></tr>
+          ${lignesSemestres}
+          <tr><th>Moyenne générale (3 semestres)</th><th>${moyenneGenerale}/20</th><th>-</th></tr>
+        </table>`;
+
+    } catch (err) {
+      zone.innerHTML = "<p style='color:red;'>Erreur JS : " + err.message + "</p>";
     }
+  });
 
-    const eleve = resultats[0];
-    zone.innerHTML = `
-      <h3>Résultat de ${eleve.prenom} ${eleve.nom} — ${eleve.classe}</h3>
-      <table>
-        <tr><th>Décision</th><td>${eleve.decision ?? "-"}</td></tr>
-        <tr><th>Rang</th><td>${eleve.rang ?? "-"}</td></tr>
-      </table>`;
-
-  } catch (err) {
-    zone.innerHTML = "<p style='color:red;'>Erreur JS : " + err.message + "</p>";
-  }
-});
-
-// ===== RÉSULTATS SECONDAIRE =====
-document.getElementById("formResultatSecondaire").addEventListener("submit", async function(e) {
-  e.preventDefault();
-  const zone = document.getElementById("resultatSecondaire");
-  const nom = document.getElementById("nomSecondaire").value.trim();
-  const classe = document.getElementById("classeSecondaire").value;
-
-  zone.innerHTML = "<p>Recherche en cours...</p>";
-
-  try {
-    const { data, error } = await supabase
-      .from("resultats_secondaire")
-      .select("*")
-      .eq("classe", classe)
-      .order("semestre", { ascending: true });
-
-    if (error) {
-      zone.innerHTML = "<p style='color:red;'>Erreur : " + error.message + "</p>";
-      return;
-    }
-
-    const mots = nom.toLowerCase().split(/\s+/).filter(m => m !== "");
-
-    const resultats = (data || []).filter(eleve => {
-      const nomComplet = `${eleve.nom ?? ""} ${eleve.prenom ?? ""}`.toLowerCase();
-      return mots.every(mot => nomComplet.includes(mot));
-    });
-
-    if (resultats.length === 0) {
-      zone.innerHTML = "<p>Aucun résultat trouvé pour ce nom et cette classe.</p>";
-      return;
-    }
-
-    const eleve = resultats[0];
-
-    const lignesSemestres = resultats.map(s => `
-      <tr>
-        <td>Semestre ${s.semestre}</td>
-        <td>${s.moyenne_semestrielle ?? "-"}/20</td>
-        <td>${s.rang ?? "-"}</td>
-      </tr>
-    `).join("");
-
-    const moyennesValides = resultats
-      .map(s => s.moyenne_semestrielle)
-      .filter(m => m !== null && m !== undefined);
-
-    const moyenneGenerale = moyennesValides.length > 0
-      ? (moyennesValides.reduce((a, b) => a + Number(b), 0) / moyennesValides.length).toFixed(2)
-      : "-";
-
-    zone.innerHTML = `
-      <h3>Résultats de ${eleve.prenom} ${eleve.nom} — ${eleve.classe}</h3>
-      <table>
-        <tr><th>Période</th><th>Moyenne</th><th>Rang</th></tr>
-        ${lignesSemestres}
-        <tr><th>Moyenne générale (3 semestres)</th><th>${moyenneGenerale}/20</th><th>-</th></tr>
-      </table>`;
-
-  } catch (err) {
-    zone.innerHTML = "<p style='color:red;'>Erreur JS : " + err.message + "</p>";
-  }
-});
 } catch (err) {
   document.body.insertAdjacentHTML("beforeend", "<p style='color:red;text-align:center;'>Erreur de chargement : " + err.message + "</p>");
 }
 </script>
-                                                   
+
 <script src="script.js"></script>
 <footer>
 
